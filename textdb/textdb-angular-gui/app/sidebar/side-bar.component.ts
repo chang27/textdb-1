@@ -99,6 +99,10 @@ export class SideBarComponent {
     return frags.join(' ');
   }
 
+  updateForm (attribute: string) {
+    jQuery("#the-flowchart").flowchart("setOperatorData", this.operatorId, this.data);
+  }
+
   onSubmit() {
     this.inSavedWindow = true;
     jQuery('#the-flowchart').flowchart('setOperatorData', this.operatorId, this.data);
