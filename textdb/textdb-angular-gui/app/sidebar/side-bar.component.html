@@ -23,7 +23,7 @@
                 </select>
                 <input *ngIf="checkInSelector(attribute) === -1" [(ngModel)]="data.properties.attributes[attribute]" (ngModelChange)="updateForm(attribute)" name="{{attribute}}" type="text" class="form-control" id="{{attribute}}" value="{{data.properties.attributes[attribute]}}" #{{attribute}}="ngModel" required>
             </div>
-            <button type="submit" class="btn btn-success" [disabled]="!editOperatorForm.form.valid">Save</button>
+            <button type="submit" class="btn btn-success" [disabled]="!editOperatorForm.form.valid" style="display:none">Save</button>
             <button type="button" class="btn btn-default" (click) = "onDelete()">Delete</button>
         </form>
     </div>
