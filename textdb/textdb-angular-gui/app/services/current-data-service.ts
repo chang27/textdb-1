@@ -100,6 +100,7 @@ export class CurrentDataService {
                 },
                 err => {
                     this.checkPressed.next(err.json());
+                    console.log("Error occur");
                 }
             );
     }
