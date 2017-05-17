@@ -31,7 +31,7 @@ export class TheFlowchartComponent {
     var current = this;
 
     // unselect operator when user click other div
-    jQuery('html').mouseup(function(e) {
+    jQuery('html').mousedown(function(e) {
       var container = jQuery(".form-control");
       if (container.is(e.target)) {
         jQuery("#the-flowchart").flowchart("unselectOperator");
