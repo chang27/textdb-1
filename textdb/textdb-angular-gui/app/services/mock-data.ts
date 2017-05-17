@@ -396,6 +396,27 @@ let wordCount = {
   }
 }
 
+let nltk = {
+  top : 20,
+  left : 20,
+  properties : {
+    title : 'Nltk',
+    inputs : {
+      input_1 : {
+        label : "Input (:i)",
+      }
+    },
+    outputs : {
+      output_1 : {
+        label : "Output (:i)",
+      }
+    },
+    attributes : {
+      "operatorType": "Nltk",
+    }
+  }
+}
+
 let characterDistanceJoin = {
   top : 20,
   left : 20,
@@ -516,6 +537,7 @@ export const DEFAULT_MATCHERS: Data[] = [
     {id: 16, jsonData: wordCountSource},
     {id: 17, jsonData: wordCount},
     {id: 19, jsonData: result},
-    {id: 20, jsonData: excelSink}
+    {id: 20, jsonData: excelSink},
+    {id: 21, jsonData: nltk},
 
 ];
