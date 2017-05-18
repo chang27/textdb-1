@@ -97,10 +97,16 @@ body {
 	width: calc(100%);
 	height: calc(100%);
 	background: #FCFCFC;
+	
 }
 
 #flow-chart-container{
 	width: calc(100% - 240px);;
 	left: 240px;
 	height: calc(100%);
+}
+
+
+
+.tryButton{
 }

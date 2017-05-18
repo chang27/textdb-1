@@ -17,12 +17,14 @@ export class OperatorBarComponent {
 
   initialize() {
     var container = jQuery('#the-flowchart').parent();
+    var InitialWidth = parseInt(jQuery("#the-flowchart").css("width"));
+    var InitialHeight = parseInt(jQuery("#the-flowchart").css("height"));
 
-    this.initializePanzoom(container);
+    this.initializePanzoom(container, InitialWidth, InitialHeight);
     this.initializeOperators(container);
   }
 
-  initializePanzoom(container: any) {
+  initializePanzoom(container: any, InitialWidth: number, InitialHeight: number) {
     // Panzoom initialization...
     jQuery('#the-flowchart').panzoom({
       disablePan: true, // disable the pan
@@ -35,6 +37,7 @@ export class OperatorBarComponent {
       e.preventDefault();
       var delta = (e.delta || e.originalEvent.wheelDelta) || e.originalEvent.detail;
       var zoomOut = delta;
+      console.log(delta);
       // var zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
       currentZoom = Math.max(0, Math.min(possibleZooms.length - 1, (currentZoom + (zoomOut / 40 - 1))));
       jQuery('#the-flowchart').flowchart('setPositionRatio', possibleZooms[currentZoom]);
@@ -43,22 +46,20 @@ export class OperatorBarComponent {
         focal: e
       });
       var ZoomRatio = possibleZooms[currentZoom];
-      // enlarge the div ratio so there's more space for the operators
-      if (ZoomRatio < 0.8) {
-        jQuery('#the-flowchart').css({
-          "left": "-354px",
-          "top": "-172px",
-          "width": "143%",
-          "height": "143%",
-        });
-      } else {
-        jQuery('#the-flowchart').css({
-          "left": "0px",
-          "width": "100%",
-          "top": "0px",
-          "height": "100%",
-        });
-      }
+
+      var new_width = InitialWidth / ZoomRatio;
+      var left_side_add = (new_width - InitialWidth) / 2 ;
+
+      var new_height = InitialHeight / ZoomRatio;
+      var top_side_add = (new_height - InitialHeight) / 2;
+
+      console.log(new_width);
+      jQuery("#the-flowchart").css({
+        "width" : new_width + "px",
+        "left" : -left_side_add + "px",
+        "height" : new_height + "px",
+        "top" : -top_side_add + "px",
+      });
 
     });
     // panzoom end

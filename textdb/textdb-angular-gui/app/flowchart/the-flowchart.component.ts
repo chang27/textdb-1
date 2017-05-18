@@ -8,6 +8,8 @@ declare var jQuery: any;
   selector: 'flowchart-container',
   template: `
 		<div id="flow-chart-container">
+      <button class="tryButton"> HELLO WORLD </button>
+
 			<div id="the-flowchart"></div>
 		</div>
 	`,
