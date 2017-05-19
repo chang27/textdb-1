@@ -29,9 +29,11 @@ export class OperatorBarComponent {
     jQuery('#the-flowchart').panzoom({
       disablePan: true, // disable the pan
       // contain : true, // if pan, only can pan within flowchart div
-
+      minScale: 0.5,
+      maxScale: 1,
+      increment: 0.1,
     });
-    var possibleZooms = [0.7, 0.8, 0.9, 1];
+    var possibleZooms = [0.5, 0.6, 0.7, 0.8, 0.9, 1];
     var currentZoom = 2;
     container.on('mousewheel.focal', function(e) {
       e.preventDefault();
