@@ -116,7 +116,7 @@ public class RegexMatcher extends AbstractSingleInputOperator {
         if(matchingResults.isEmpty()) {
             return null;
         }
-        //!!TODO
+
         ListField<Span> spanListField = inputTuple.getField(predicate.getSpanListName());
         List<Span> spanList = spanListField.getValue();
         spanList.addAll(matchingResults);
@@ -236,33 +236,33 @@ public class RegexMatcher extends AbstractSingleInputOperator {
             }
           //  Map<Integer, Set<Integer>> integerSetMap = genMatchSuffix(fieldValue, attributeName, suffixMap);
             List<int[]> indexs = generateAllCombinationsOfRegex(attributeName, fieldValue, suffixMap, temp);
-            for (int[] entry : indexs) {
-                String spanValue = fieldValue.substring(entry[0], entry[1]);
-                Span e = new Span(attributeName, entry[0], entry[1], predicate.getRegex(), spanValue);
-                matchingResults.add(e);
-                //System.out.println("new span:" + e);
+            if(!indexs.isEmpty()) {
+                for (int[] entry : indexs) {
+                    String spanValue = fieldValue.substring(entry[0], entry[1]);
+                    Span e = new Span(attributeName, entry[0], entry[1], predicate.getRegex(), spanValue);
+                    matchingResults.add(e);
+                    //System.out.println("new span:" + e);
+                }
             }
-
         return matchingResults;
     }
 
-    private Map<Integer, Set<Integer>> genMatchSuffix(String fieldValue, String attributeName, Map<Integer, String> toMatch) {
-        Map<Integer, Set<Integer>> map = new HashMap<>();
-        for (Integer key : toMatch.keySet()) {
-            if (toMatch.get(key).length() != 0) {
-                Set<Integer> set = new HashSet<>();
-                Pattern javaPattern = Pattern.compile(toMatch.get(key),
-                        Pattern.CASE_INSENSITIVE);
-                java.util.regex.Matcher javaMatcher = javaPattern.matcher(fieldValue);
-                while (javaMatcher.find()) {
-                    int start = javaMatcher.start();
-                    set.add(start);
-                }
-                map.put(key, set);
-            }
-        }
-        return map;
-    }
+  //  private Map<Integer, Set<Integer>> genMatchSuffix(String fieldValue, String attributeName, Map<Integer, String> toMatch) {
+//        Map<Integer, Set<Integer>> map = new HashMap<>();
+//           if (toMatch.get(key).length() != 0) {
+   //             Set<Integer> set = new HashSet<>();
+   //             Pattern javaPattern = Pattern.compile(toMatch.get(key),
+  //                      Pattern.CASE_INSENSITIVE);
+   //             java.util.regex.Matcher javaMatcher = javaPattern.matcher(fieldValue);
+    //            while (javaMatcher.find()) {
+    //                int start = javaMatcher.start();
+     //               set.add(start);
+     //           }
+    //            map.put(key, set);
+    //        }
+    //    }
+    //    return map;
+   // }
 
     /***
      *
@@ -289,7 +289,7 @@ public class RegexMatcher extends AbstractSingleInputOperator {
                 }
             }
         }
-
+        List<int[]> resultArray = new ArrayList<>();
         for (int i = 1; i <= labelSpanList.size(); i++) {
             String suffix = suffixMap.get(i);
             if (suffix.length() != 0) {
@@ -305,8 +305,67 @@ public class RegexMatcher extends AbstractSingleInputOperator {
                     }
                 }
             }
+            if(labelSpanList.get(i).isEmpty()) return resultArray;
         }
 
+        for(int i = 1; i <= labelSpanList.size(); i++){
+            List<Span> sort = SortSpanlist(labelSpanList.get(i));
+            labelSpanList.put(i, sort);
+        }
+        resultArray = generateCombination(labelSpanList);
+//        for(Span span: labelSpanList.get(1)){
+//            boolean isValid = true;
+//            int[] iArray = new int[2];
+//            if(labelSpanList.size() == 1){
+//                iArray[0] = span.getStart();
+//                iArray[1] = span.getEnd();
+//                       iArray[1] = span.getEnd();
+//            }else {
+//                iArray[0] = span.getStart();
+//                int index = 2;
+//                int start = span.getEnd();
+//                while (index <= labelSpanList.size()) {
+//                    SortSpanlist(labelSpanList.get(index));
+//                    Span next = binarySearch(SortSpanlist(labelSpanList.get(index)), start);
+//                    if (next.getStart() != -1 && next.getValue() != null) {
+//                        if (index == labelSpanList.size()) {
+//                            iArray[1] = next.getEnd();
+//                        } else if (index < labelSpanList.size()) {
+//                            start = next.getEnd();
+//                        }
+//                        index++;
+//                    } else {
+//                        isValid = false;
+//                        break;
+//
+//                    }
+//                }
+//
+//            }
+//            if (isValid && iArray[0] >= 0 && iArray[1] >= 0) {
+//                res.add(iArray);
+//            }
+//        }
+//
+
+
+        //for (Span span : labelSpanList.get(1)) {
+          //  int[] iArray = new int[2];
+           // if (labelSpanList.size() == 1) {
+        //        iArray[0] = span.getStart();
+         //       iArray[1] = span.getEnd();
+         //   } else {
+         //       iArray[0] = span.getStart();
+         //       iArray[1] = helper(span, labelSpanList, 2)[1];
+         //   }
+         //   if (iArray[1] != -1) {
+         //       res.add(iArray);
+          //  }
+       // }
+        return resultArray;
+    }
+
+    private List<int[]> generateCombination(Map<Integer, List<Span>> labelSpanList){
         List<int[]> res = new ArrayList<>();
         for(Span span: labelSpanList.get(1)){
             boolean isValid = true;
@@ -320,7 +379,7 @@ public class RegexMatcher extends AbstractSingleInputOperator {
                 int index = 2;
                 int start = span.getEnd();
                 while (index <= labelSpanList.size()) {
-                 //   SortSpanlist(labelSpanList.get(index));
+                    //   SortSpanlist(labelSpanList.get(index));
                     Span next = binarySearch(SortSpanlist(labelSpanList.get(index)), start);
                     if (next.getStart() != -1 && next.getValue() != null) {
                         if (index == labelSpanList.size()) {
@@ -341,23 +400,8 @@ public class RegexMatcher extends AbstractSingleInputOperator {
                 res.add(iArray);
             }
         }
-
-
-
-        //for (Span span : labelSpanList.get(1)) {
-          //  int[] iArray = new int[2];
-           // if (labelSpanList.size() == 1) {
-        //        iArray[0] = span.getStart();
-         //       iArray[1] = span.getEnd();
-         //   } else {
-         //       iArray[0] = span.getStart();
-         //       iArray[1] = helper(span, labelSpanList, 2)[1];
-         //   }
-         //   if (iArray[1] != -1) {
-         //       res.add(iArray);
-          //  }
-       // }
         return res;
+
     }
 
    // private int[] helper(Span span, Map<Integer, List<Span>> labelSpanList, int index) {
