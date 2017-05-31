@@ -16,8 +16,6 @@ import edu.uci.ics.textdb.api.tuple.Tuple;
 import edu.uci.ics.textdb.exp.keywordmatcher.KeywordSourcePredicate;
 import edu.uci.ics.textdb.exp.regexmatcher.RegexMatcher;
 import edu.uci.ics.textdb.exp.regexmatcher.RegexPredicate;
-import edu.uci.ics.textdb.exp.join.IJoinPredicate;
-import edu.uci.ics.textdb.exp.join.Join;
 import edu.uci.ics.textdb.exp.keywordmatcher.KeywordMatcherSourceOperator;
 import edu.uci.ics.textdb.exp.keywordmatcher.KeywordMatchingType;
 import edu.uci.ics.textdb.exp.source.scan.ScanBasedSourceOperator;

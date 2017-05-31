@@ -396,6 +396,7 @@ public class RegexMatcherTest {
         List<Tuple> exactResults = RegexMatcherTestHelper.getQueryResults(
                 PEOPLE_TABLE, query, keywordQuery, Arrays.asList(TestConstants.FIRST_NAME), "name", false, Integer.MAX_VALUE, 0);
 
+        System.out.println(exactResults);
         List<Tuple> expectedResults = new ArrayList<Tuple>();
 
         // expected to match "george lin lin"

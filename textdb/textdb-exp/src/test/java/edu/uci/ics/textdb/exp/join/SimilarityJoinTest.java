@@ -16,7 +16,6 @@ import edu.uci.ics.textdb.api.span.Span;
 import edu.uci.ics.textdb.api.tuple.Tuple;
 import edu.uci.ics.textdb.api.utils.TestUtils;
 import edu.uci.ics.textdb.api.utils.Utils;
-import edu.uci.ics.textdb.exp.join.SimilarityJoinPredicate;
 import edu.uci.ics.textdb.exp.keywordmatcher.KeywordMatchingType;
 import edu.uci.ics.textdb.exp.regexmatcher.RegexMatcher;
 
