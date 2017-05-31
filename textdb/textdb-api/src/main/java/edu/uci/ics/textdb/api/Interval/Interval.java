@@ -1,4 +1,4 @@
-package edu.uci.ics.textdb.exp.regexmatcher;
+package edu.uci.ics.textdb.api.Interval;
 
 /**
  * Created by Chang on 5/30/17.
