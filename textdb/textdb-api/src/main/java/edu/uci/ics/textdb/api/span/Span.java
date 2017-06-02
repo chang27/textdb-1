@@ -32,17 +32,17 @@ public class Span {
     @JsonCreator
     public Span(
             @JsonProperty(value = JsonConstants.ATTRIBUTE_NAME, required = true)
-            String attributeName, 
+                    String attributeName,
             @JsonProperty(value = JsonConstants.SPAN_START, required = true)
-            int start, 
+                    int start,
             @JsonProperty(value = JsonConstants.SPAN_END, required = true)
-            int end, 
+                    int end,
             @JsonProperty(value = JsonConstants.SPAN_KEY, required = true)
-            String key, 
+                    String key,
             @JsonProperty(value = JsonConstants.SPAN_VALUE, required = true)
-            String value,
+                    String value,
             @JsonProperty(value = JsonConstants.SPAN_TOKEN_OFFSET, required = true)
-            int tokenOffset) {
+                    int tokenOffset) {
         this.attributeName = attributeName;
         this.start = start;
         this.end = end;
@@ -69,7 +69,7 @@ public class Span {
     public int getEnd() {
         return end;
     }
-    
+
     @JsonProperty(value = JsonConstants.SPAN_KEY)
     public String getKey() {
         return key;
@@ -137,44 +137,5 @@ public class Span {
 
         return true;
     }
-
-    public void setAttributeName(String attributeName) {
-        this.attributeName = attributeName;
-    }
-
-    public void setStart(int start) {
-        this.start = start;
-    }
-
-    public void setEnd(int end) {
-        this.end = end;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public void setTokenOffset(int tokenOffset) {
-        this.tokenOffset = tokenOffset;
-    }
-
-    public static void setInvalidTokenOffset(int invalidTokenOffset) {
-        INVALID_TOKEN_OFFSET = invalidTokenOffset;
-    }
-
-    @Override
-    public String toString() {
-        return "Span{" +
-                "attributeName='" + attributeName + '\'' +
-                ", start=" + start +
-                ", end=" + end +
-                ", key='" + key + '\'' +
-                ", value='" + value + '\'' +
-                ", tokenOffset=" + tokenOffset +
-                '}';
-    }
 }
+

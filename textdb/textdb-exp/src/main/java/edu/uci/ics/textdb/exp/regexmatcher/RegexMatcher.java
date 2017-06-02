@@ -1,12 +1,10 @@
 package edu.uci.ics.textdb.exp.regexmatcher;
 
-import edu.uci.ics.textdb.api.Interval.Interval;
 import edu.uci.ics.textdb.api.constants.ErrorMessages;
 import edu.uci.ics.textdb.api.constants.SchemaConstants;
 import edu.uci.ics.textdb.api.exception.DataFlowException;
 import edu.uci.ics.textdb.api.exception.TextDBException;
 import edu.uci.ics.textdb.api.field.ListField;
-import edu.uci.ics.textdb.api.Interval.Interval;
 import edu.uci.ics.textdb.api.schema.Attribute;
 import edu.uci.ics.textdb.api.schema.AttributeType;
 import edu.uci.ics.textdb.api.schema.Schema;
@@ -144,9 +142,9 @@ public class RegexMatcher extends AbstractSingleInputOperator {
 
 
     private List<Span> processLabelledRegex(String attributeName, Tuple inputTuple) {
-        Map<Integer, List<Interval>> labelIntervalList = createLabelledSpanList(inputTuple, idLabelMapping);
+        Map<Integer, List<Span>> labelSpanList = createLabelledSpanList(inputTuple, idLabelMapping);
         String fieldValue = inputTuple.getField(attributeName).getValue().toString();
-        List<Span> matchResult = labelledRegexMatcher(fieldValue, attributeName, labelIntervalList, suffixMapping);
+        List<Span> matchResult = labelledRegexMatcher(fieldValue, attributeName, labelSpanList, suffixMapping);
 
         return matchResult;
     }
@@ -186,12 +184,12 @@ public class RegexMatcher extends AbstractSingleInputOperator {
         return regexMod;
     }
 
-    private List<Span> labelledRegexMatcher(String fieldValue, String attributeName, Map<Integer, List<Interval>> labelIDIntervalMap, Map<Integer, String> suffixMap) throws DataFlowException {
+    private List<Span> labelledRegexMatcher(String fieldValue, String attributeName, Map<Integer, List<Span>> labelIDSpanMap, Map<Integer, String> suffixMap) throws DataFlowException {
         List<Span> matchingResults = new ArrayList<>();
 
-        Map<Integer, List<Interval>> temp = new HashMap<>();
-        for (Integer key : labelIDIntervalMap.keySet()) {
-            temp.put(key, labelIDIntervalMap.get(key));
+        Map<Integer, List<Span>> temp = new HashMap<>();
+        for (Integer key : labelIDSpanMap.keySet()) {
+            temp.put(key, labelIDSpanMap.get(key));
         }
         List<int[]> indexs = generateAllCombinationsOfRegex(attributeName, fieldValue, suffixMap, temp);
         if (!indexs.isEmpty()) {
@@ -211,11 +209,11 @@ public class RegexMatcher extends AbstractSingleInputOperator {
      * @param attrName: regex tokens start position
      * @return
      */
-    private List<int[]> generateAllCombinationsOfRegex(String attrName, String fieldValue, Map<Integer, String> suffixMap, Map<Integer, List<Interval>> labelSpanList) {
+    private List<int[]> generateAllCombinationsOfRegex(String attrName, String fieldValue, Map<Integer, String> suffixMap, Map<Integer, List<Span>> labelSpanList) {
 
         if (suffixMap.get(0).length() != 0) {
             String toMatch = suffixMap.get(0);
-            for (Interval span : labelSpanList.get(1)) {
+            for (Span span : labelSpanList.get(1)) {
                 if (!span.getAttributeName().equals(attrName)) {
                     labelSpanList.get(1).remove(span);
                   continue;
@@ -224,7 +222,9 @@ public class RegexMatcher extends AbstractSingleInputOperator {
                 if (!fieldValue.substring(start, start + toMatch.length()).equals(toMatch)) {
                     labelSpanList.get(1).remove(span);
                 } else {
-                    span.setStart(start);
+                    Span newSpan = new Span(span.getAttributeName(), start, span.getEnd(), span.getKey(), toMatch +span.getValue() );
+                    labelSpanList.get(1).remove(span);
+                    labelSpanList.get(1).add(newSpan);
 
                 }
             }
@@ -233,7 +233,7 @@ public class RegexMatcher extends AbstractSingleInputOperator {
         List<int[]> resultArray = new ArrayList<>();
         for (int i = 1; i <= labelSpanList.size(); i++) {
             String suffix = suffixMap.get(i);
-            for (Interval span : labelSpanList.get(i)) {
+            for (Span span : labelSpanList.get(i)) {
                 if (!span.getAttributeName().equals(attrName)) {
                     labelSpanList.get(i).remove(span);
                     continue;
@@ -242,7 +242,11 @@ public class RegexMatcher extends AbstractSingleInputOperator {
                     if (!fieldValue.substring(span.getEnd(), span.getEnd() + suffix.length()).equals(suffix)) {
                         labelSpanList.get(i).remove(span);
                     } else {
-                        span.setEnd(span.getEnd() + suffix.length());
+                        int end = span.getEnd()+ suffix.length();
+                        Span newSpan = new Span(span.getAttributeName(), span.getStart(), end, span.getKey(), span.getValue()+suffix);
+                        labelSpanList.get(i).remove(span);
+                        labelSpanList.get(i).add(newSpan);
+                       // span.setEnd(span.getEnd() + suffix.length());
                     }
                 }
 
@@ -251,7 +255,7 @@ public class RegexMatcher extends AbstractSingleInputOperator {
         }
         for (int i = 1; i <= labelSpanList.size(); i++) {
 
-            List<Interval> sort = SortSpanlist(labelSpanList.get(i));
+            List<Span> sort = SortSpanlist(labelSpanList.get(i));
             labelSpanList.put(i, sort);
         }
 
@@ -261,9 +265,9 @@ public class RegexMatcher extends AbstractSingleInputOperator {
         return resultArray;
     }
 
-    private List<int[]> generateCombination(Map<Integer, List<Interval>> labelSpanList) {
+    private List<int[]> generateCombination(Map<Integer, List<Span>> labelSpanList) {
         List<int[]> res = new ArrayList<>();
-        for (Interval span : labelSpanList.get(1)) {
+        for (Span span : labelSpanList.get(1)) {
             boolean isValid = true;
             int[] iArray = new int[2];
             if (labelSpanList.size() == 1) {
@@ -275,8 +279,8 @@ public class RegexMatcher extends AbstractSingleInputOperator {
                 int index = 2;
                 int start = span.getEnd();
                 while (index <= labelSpanList.size()) {
-                    Interval next = binarySearch(labelSpanList.get(index), start);
-                    if (next.getStart() != -1 && next.getAttributeName() != null) {
+                    Span next = binarySearch(labelSpanList.get(index), start);
+                    if (next.getStart() != -1 && next.getValue()!=null) {
                         if (index == labelSpanList.size()) {
                             iArray[1] = next.getEnd();
                         } else if (index < labelSpanList.size()) {
@@ -300,32 +304,27 @@ public class RegexMatcher extends AbstractSingleInputOperator {
     }
 
 
-    private Map<Integer, List<Interval>> createLabelledSpanList(Tuple inputTuple, Map<Integer, String> idLabelMapping) {
-        Map<Integer, List<Interval>> labelSpanList = new HashMap<>();
+    private Map<Integer, List<Span>> createLabelledSpanList(Tuple inputTuple, Map<Integer, String> idLabelMapping) {
+        Map<Integer, List<Span>> labelSpanList = new HashMap<>();
         for (int id : idLabelMapping.keySet()) {
             String labels = idLabelMapping.get(id);
-            List<Interval> values = new ArrayList<>();
-            //HashSet<String> values = new HashSet<String>();
-            // for (String oneField : labels) {
+            List<Span> values = new ArrayList<>();
+
             ListField<Span> spanListField = inputTuple.getField(labels);
             List<Span> spanList = spanListField.getValue();
-           // List<Interval> intervalList = new ArrayList<>();
-            for(Span span: spanList){
-                Interval interval = new Interval(span.getStart(), span.getEnd(),span.getAttributeName());
-                values.add(interval);
-            }
-            //values.addAll(intervalList);
-            // }
+
+
+            values.addAll(spanList);
 
             labelSpanList.put(id, values);
         }
         return labelSpanList;
     }
 
-    private List<Interval> SortSpanlist(List<Interval> spanList) {
-        Collections.sort(spanList, new Comparator<Interval>() {
+    private List<Span> SortSpanlist(List<Span> spanList) {
+        Collections.sort(spanList, new Comparator<Span>() {
             @Override
-            public int compare(Interval o1, Interval o2) {
+            public int compare(Span o1, Span o2) {
                 return o1.getStart() - o2.getStart();
             }
         });
@@ -333,7 +332,7 @@ public class RegexMatcher extends AbstractSingleInputOperator {
         return spanList;
     }
 
-    private static Interval binarySearch(List<Interval> list, int index) {
+    private static Span binarySearch(List<Span> list, int index) {
         int start = 0;
         int end = list.size() - 1;
         while (start <= end) {
@@ -346,7 +345,7 @@ public class RegexMatcher extends AbstractSingleInputOperator {
                 end = mid - 1;
             }
         }
-        Interval nul = new Interval(-1, -1, "null");
+        Span nul = new Span("nul", -1, -1, "offset", "null");
         return nul;
     }
 }
