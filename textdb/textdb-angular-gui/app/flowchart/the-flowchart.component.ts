@@ -89,6 +89,7 @@ export class TheFlowchartComponent {
       }
     });
 
+
     jQuery('html').keyup(function(e) { //key binding function
       if (e.keyCode === 8) { //backspace
         var current_id = jQuery('#the-flowchart').flowchart('getSelectedOperatorId');

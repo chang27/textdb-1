@@ -32,7 +32,7 @@ export class AppComponent {
 
     ngAfterViewInit() {
         var current = this;
-        
+
         jQuery(document).ready(function() {
             current.theFlowchart.initialize({});
             current.theOperatorBar.initialize();

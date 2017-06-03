@@ -14,7 +14,7 @@ body {
 	margin: 0px;
 	padding: 0px;
 	padding-right: 5px;
-	overflow-x: auto;
+
 }
 
 .navbar-brand{
@@ -40,7 +40,7 @@ body {
 }
 
 .previous-operators{
-	margin-left: 30px;
+	margin-left: 240px;
 }
 
 .fill {
@@ -107,8 +107,6 @@ body {
 
 }
 
-
-
 .zoomInButton{
 	width: 80px;
 	height: 80px;
@@ -133,4 +131,47 @@ body {
 	font-size: 50px;
 	border-color: #000;
 	background: #FCFCFC;
+}
+
+.dropdown-menu {
+	position: absolute;
+	z-index: 1;
+	background-color: red;
+	left: 300px;
+	top: 400px;
+}
+
+.jq-dropdown-menu{
+	color : black;
+}
+
+.dropdown {
+	position: relative;
+	float: left;
+}
+
+
+.dropdown-content {
+	position: absolute;
+  min-width: 160px;
+	text-align: left;
+	z-index: 1;
+	background-color: white;
+	border-radius: 5px;
+	display: none;
+
+}
+
+.dropdown-content a {
+	display: block;
+	float: none;
+	color: black;
+	padding: 12px;
+	margin-top: 3px;
+	margin-bottom: 3px;
+	text-align: left;
+}
+
+.dropdown-content a:hover {
+	background-color: #a6a6a6;
 }

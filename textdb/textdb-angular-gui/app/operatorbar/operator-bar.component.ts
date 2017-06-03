@@ -13,6 +13,9 @@ declare var jQuery: any;
 })
 export class OperatorBarComponent {
 
+  theDropDownNow : string;
+
+
   constructor(private mockDataService: MockDataService, private currentDataService: CurrentDataService) { }
 
   initialize() {
@@ -22,6 +25,41 @@ export class OperatorBarComponent {
 
     this.initializePanzoom(container, InitialWidth, InitialHeight);
     this.initializeOperators(container);
+    this.initializeDrop(this.theDropDownNow);
+  }
+
+  testingFunction() {
+    console.log("Hello World");
+  }
+
+  initializeDrop (currentDrop : string) {
+
+    // close all dropdown when clicked
+
+    jQuery('html').mouseup(function(e){
+      jQuery('.dropdown-content').css({
+        "display" : "none",
+      });
+      var checkIsDropDown = jQuery('.dropdown');
+      if (!checkIsDropDown.is(e.target)){
+        currentDrop = "";
+      }
+    });
+
+    // if clicked = dropdown button then open the dropdown menu
+
+    jQuery('.dropdown').click(function(){
+      var currentDropType = jQuery(this).data('dropdown-type');
+      if (currentDropType !== currentDrop){
+        var dropdownID = "#" + currentDropType;
+        jQuery(dropdownID).css({
+          "display" : "block",
+        });
+        currentDrop = currentDropType;
+      } else {
+        currentDrop = "";
+      }
+    });
   }
 
   initializePanzoom(container: any, InitialWidth: number, InitialHeight: number) {
@@ -66,7 +104,6 @@ export class OperatorBarComponent {
     });
     // panzoom end
   }
-
 
   initializeOperators(container: any) {
     var findOperatorData = function(opeartorId: number, opeatorList: [any]): any {
