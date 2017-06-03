@@ -15,13 +15,14 @@
                 </select>
                 <select *ngIf="attribute === 'sampleType'" class="form-control" id="{{attribute}}" required  [(ngModel)]="data.properties.attributes[attribute]" (ngModelChange)="updateForm(attribute)" name="{{attribute}}" #{{attribute}}="ngModel">
                   <option *ngFor="let sample of samplerList" [value] = "sample">{{sample}}</option>
-                </select>         <select *ngIf="attribute === 'compareNumber'" class="form-control" id="{{attribute}}" required  [(ngModel)]="data.properties.attributes[attribute]" (ngModelChange)="updateForm(attribute)" name="{{attribute}}" #{{attribute}}="ngModel">
+                </select>
+                <select *ngIf="attribute === 'compareNumber'" class="form-control" id="{{attribute}}" required  [(ngModel)]="data.properties.attributes[attribute]" (ngModelChange)="updateForm(attribute)" name="{{attribute}}" #{{attribute}}="ngModel">
                   <option *ngFor="let compare of compareList" [value] = "compare">{{compare}}</option>
                 </select>
                 <select *ngIf="attribute === 'aggregationType'" class="form-control" id="{{attribute}}" required  [(ngModel)]="data.properties.attributes[attribute]" (ngModelChange)="updateForm(attribute)" name="{{attribute}}" #{{attribute}}="ngModel">
                   <option *ngFor="let agg of aggregationList" [value] = "agg">{{agg}}</option>
                 </select>
-                <input *ngIf="checkInSelector(attribute) === -1" [(ngModel)]="data.properties.attributes[attribute]" (ngModelChange)="updateForm(attribute)" name="{{attribute}}" type="text" class="form-control" id="{{attribute}}" value="{{data.properties.attributes[attribute]}}" #{{attribute}}="ngModel" required>
+                <input *ngIf="checkInSelector(attribute) === -1" [(ngModel)]="data.properties.attributes[attribute]" (ngModelChange)="updateForm(attribute)" name="{{attribute}}" type="text" class="form-control" id="{{attribute}}" defaultValue="{{data.properties.attributes[attribute]}}" #{{attribute}}="ngModel" required>
             </div>
             <button type="submit" class="btn btn-success" [disabled]="!editOperatorForm.form.valid" style="display:none">Save</button>
             <button type="button" class="btn btn-default" (click) = "onDelete()">Delete</button>
