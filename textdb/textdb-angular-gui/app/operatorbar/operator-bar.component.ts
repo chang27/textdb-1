@@ -28,36 +28,31 @@ export class OperatorBarComponent {
     this.initializeDrop(this.theDropDownNow);
   }
 
-  testingFunction() {
-    console.log("Hello World");
-  }
-
   initializeDrop (currentDrop : string) {
-
-    // close all dropdown when clicked
 
     jQuery('html').mouseup(function(e){
       jQuery('.dropdown-content').css({
         "display" : "none",
       });
-      var checkIsDropDown = jQuery('.dropdown');
-      if (!checkIsDropDown.is(e.target)){
+      var checkOnClickIsDropDown = jQuery('.dropdown');
+      var checkOnIcon = jQuery('.fa');
+      if (!checkOnClickIsDropDown.is(e.target) && !checkOnIcon.is(e.target)){
         currentDrop = "";
-      }
-    });
-
-    // if clicked = dropdown button then open the dropdown menu
-
-    jQuery('.dropdown').click(function(){
-      var currentDropType = jQuery(this).data('dropdown-type');
-      if (currentDropType !== currentDrop){
-        var dropdownID = "#" + currentDropType;
-        jQuery(dropdownID).css({
-          "display" : "block",
-        });
-        currentDrop = currentDropType;
       } else {
-        currentDrop = "";
+        if (checkOnIcon.is(e.target)){
+          var currentDropType = jQuery(e.target).parent().data('dropdown-type');
+        } else {
+          var currentDropType = jQuery(e.target).data('dropdown-type');
+        }
+        if (currentDropType !== currentDrop){
+          var dropdownID = "#" + currentDropType;
+          jQuery(dropdownID).css({
+            "display" : "block",
+          });
+          currentDrop = currentDropType;
+        } else {
+          currentDrop = "";
+        }
       }
     });
   }
@@ -77,7 +72,6 @@ export class OperatorBarComponent {
       e.preventDefault();
       var delta = (e.delta || e.originalEvent.wheelDelta) || e.originalEvent.detail;
       var zoomOut = delta;
-      console.log(delta);
       // var zoomOut = delta ? delta < 0 : e.originalEvent.deltaY > 0;
       currentZoom = Math.max(0, Math.min(possibleZooms.length - 1, (currentZoom + (zoomOut / 40 - 1))));
       jQuery('#the-flowchart').flowchart('setPositionRatio', possibleZooms[currentZoom]);
@@ -93,13 +87,13 @@ export class OperatorBarComponent {
       var new_height = InitialHeight / ZoomRatio;
       var top_side_add = (new_height - InitialHeight) / 2;
 
-      console.log(new_width);
       jQuery("#the-flowchart").css({
         "width" : new_width + "px",
         "left" : -left_side_add + "px",
         "height" : new_height + "px",
         "top" : -top_side_add + "px",
       });
+
 
     });
     // panzoom end
